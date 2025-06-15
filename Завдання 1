@@ -1,0 +1,27 @@
+# Завдання 1: Оптимізація виробництва з використанням PuLP
+import pulp
+
+# Створення моделі
+model = pulp.LpProblem("Maximize_Production", pulp.LpMaximize)
+
+# Змінні рішення: x – кількість лимонаду, y – кількість фруктового соку
+x = pulp.LpVariable("Lemonade", lowBound=0, cat='Integer')
+y = pulp.LpVariable("Fruit_Juice", lowBound=0, cat='Integer')
+
+# Цільова функція: максимізувати суму продуктів
+model += x + y, "Total_Production"
+
+# Обмеження ресурсів:
+model += 2 * x + 1 * y <= 100, "Water_Limit"
+model += 1 * x <= 50, "Sugar_Limit"
+model += 1 * x <= 30, "Lemon_Juice_Limit"
+model += 2 * y <= 40, "Fruit_Puree_Limit"
+
+# Розв’язання задачі
+model.solve()
+
+# Вивід результатів
+print("Статус:", pulp.LpStatus[model.status])
+print("Кількість Лимонаду:", x.varValue)
+print("Кількість Фруктового соку:", y.varValue)
+print("Загальна кількість продуктів:", pulp.value(model.objective))
